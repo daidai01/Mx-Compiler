@@ -11,6 +11,7 @@ public class AssignExpr extends BaseExpr {
         super(pos);
         this.leftSrc = leftSrc;
         this.rightSrc = rightSrc;
+        assignable = rightSrc.assignable;
     }
 
     @Override

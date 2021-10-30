@@ -3,7 +3,7 @@ package AST.Expr;
 import AST.ASTVisitor;
 import Util.Position;
 
-public class SuffixExpr extends BaseExpr{
+public class SuffixExpr extends BaseExpr {
     public BaseExpr src;
     public String op;
 
@@ -11,6 +11,7 @@ public class SuffixExpr extends BaseExpr{
         super(pos);
         this.src = src;
         this.op = op;
+        assignable = false;
     }
 
     @Override

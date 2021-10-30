@@ -4,13 +4,20 @@ import AST.ASTVisitor;
 import Util.Position;
 
 public class MemberExpr extends BaseExpr {
-    public BaseExpr identifier;
-    public String member;
+    public BaseExpr expr;
+    public String identifier;
+    public boolean isFunc = false;
 
-    public MemberExpr(BaseExpr identifier, String member, Position pos) {
+    public MemberExpr(BaseExpr expr, String identifier, Position pos) {
         super(pos);
+        this.expr = expr;
         this.identifier = identifier;
-        this.member = member;
+        assignable = true;
+    }
+
+    public void setIsFunc() {
+        this.isFunc = true;
+        assignable = false;
     }
 
     @Override

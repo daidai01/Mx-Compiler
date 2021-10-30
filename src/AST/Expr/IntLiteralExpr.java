@@ -9,6 +9,7 @@ public class IntLiteralExpr extends BaseExpr {
     public IntLiteralExpr(int value, Position pos) {
         super(pos);
         this.value = value;
+        assignable = false;
     }
 
     @Override

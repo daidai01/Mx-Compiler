@@ -1,10 +1,11 @@
 grammar Mx;
 
-program : (varDef | funDef | classDef)* EOF;
+program : subProgram * EOF;
 
+subProgram : varDef | funcDef | classDef;
 varDef : varType subVar (',' subVar)* ';';
-funDef : returnType Identifier '(' parameterList? ')' suite;
-classDef : Class Identifier '{' (varDef | funDef)* '}' ';';
+funcDef : returnType Identifier '(' parameterList? ')' suite;
+classDef : Class Identifier '{' (varDef | funcDef)* '}' ';';
 
 suite : '{' statement* '}';
 subVar : Identifier ('=' expression)?;
@@ -25,7 +26,7 @@ statement
 
 expression
     : primary #atomExpr
-    | '[' '&' ']' ('(' parameterList ')')* '-' '>'  suite '(' parameterList? ')'     #lambdaExpr
+    | '[' '&' ']' ('(' parameterList ')')* '-' '>'  suite '(' expressionList? ')'    #lambdaExpr
     | <assoc=right> New creator                                                      #newExpr
     | expression '[' expression ']'                                                  #indexExpr //2
     | expression '(' expressionList? ')'                                             #functionExpr //2
@@ -46,10 +47,11 @@ expression
     ;
 
 primary : '(' expression ')' | Identifier | literal | This;
-literal : ConstBool | ConstInteger | ConstString | Null;
+literal : True | False | ConstInteger | ConstString | Null;
 expressionList : expression (',' expression)*;
 creator
-    : basicType ('[' expression ']')+ ('[' ']')*                                     #arrayCreator
+    : basicType ('[' expression ']')+ ('[' ']')+ ('[' expression ']')+               #wrongCreator
+    | basicType ('[' expression ']')+ ('[' ']')*                                     #arrayCreator
     | basicType ('(' ')')?                                                           #basicCreator
     ;
 

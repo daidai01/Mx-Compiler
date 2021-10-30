@@ -11,6 +11,8 @@ public class PrefixExpr extends BaseExpr {
         super(pos);
         this.src = src;
         this.op = op;
+        if (op.equals("++") || op.equals("--")) assignable = true;
+        else assignable = false;
     }
 
     @Override

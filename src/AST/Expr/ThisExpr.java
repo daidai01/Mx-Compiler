@@ -1,15 +1,14 @@
 package AST.Expr;
 
 import AST.ASTVisitor;
+import Util.Entity.ClassEntity;
 import Util.Position;
 
-public class BoolLiteralExpr extends BaseExpr {
-    public boolean value;
+public class ThisExpr extends BaseExpr {
+    public ClassEntity classEntity = null;
 
-    public BoolLiteralExpr(boolean value, Position pos) {
+    public ThisExpr(Position pos) {
         super(pos);
-        this.value = value;
-        assignable = false;
     }
 
     @Override

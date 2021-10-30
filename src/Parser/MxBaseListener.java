@@ -28,6 +28,18 @@ public class MxBaseListener implements MxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
+	@Override public void enterSubProgram(MxParser.SubProgramContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitSubProgram(MxParser.SubProgramContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
 	@Override public void enterVarDef(MxParser.VarDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
@@ -40,13 +52,13 @@ public class MxBaseListener implements MxListener {
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void enterFunDef(MxParser.FunDefContext ctx) { }
+	@Override public void enterFuncDef(MxParser.FuncDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
 	 * <p>The default implementation does nothing.</p>
 	 */
-	@Override public void exitFunDef(MxParser.FunDefContext ctx) { }
+	@Override public void exitFuncDef(MxParser.FuncDefContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *
@@ -371,6 +383,18 @@ public class MxBaseListener implements MxListener {
 	 * <p>The default implementation does nothing.</p>
 	 */
 	@Override public void exitExpressionList(MxParser.ExpressionListContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void enterWrongCreator(MxParser.WrongCreatorContext ctx) { }
+	/**
+	 * {@inheritDoc}
+	 *
+	 * <p>The default implementation does nothing.</p>
+	 */
+	@Override public void exitWrongCreator(MxParser.WrongCreatorContext ctx) { }
 	/**
 	 * {@inheritDoc}
 	 *

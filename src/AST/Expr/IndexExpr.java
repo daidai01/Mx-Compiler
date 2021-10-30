@@ -11,6 +11,7 @@ public class IndexExpr extends BaseExpr {
         super(pos);
         this.identifier = identifier;
         this.index = index;
+        assignable = identifier.assignable;
     }
 
     @Override

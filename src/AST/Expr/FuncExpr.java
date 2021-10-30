@@ -3,13 +3,12 @@ package AST.Expr;
 import AST.ASTVisitor;
 import Util.Position;
 
-public class BoolLiteralExpr extends BaseExpr {
-    public boolean value;
+public class FuncExpr extends BaseExpr {
+    public String name;
 
-    public BoolLiteralExpr(boolean value, Position pos) {
+    public FuncExpr(String name, Position pos) {
         super(pos);
-        this.value = value;
-        assignable = false;
+        this.name = name;
     }
 
     @Override

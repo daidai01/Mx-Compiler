@@ -7,7 +7,7 @@ import Util.Position;
 import java.util.ArrayList;
 
 public class RootNode extends ASTNode {
-    public ArrayList<BaseDef> defs = new ArrayList<>();
+    public ArrayList<ASTNode> defs = new ArrayList<>();
 
     public RootNode(Position pos) {
         super(pos);

@@ -2,53 +2,47 @@ package Frontend;
 
 import AST.ASTVisitor;
 import AST.Expr.*;
-import AST.Program.ClassDef;
-import AST.Program.FuncDef;
-import AST.Program.RootNode;
-import AST.Program.TypeNode;
+import AST.Program.*;
 import AST.Stmt.*;
 import Util.Entity.ClassEntity;
-import Util.Entity.FuncEntity;
+import Util.Entity.VarEntity;
 import Util.Error.SemanticError;
 import Util.Scope.BaseScope;
-import Util.Scope.ClassScope;
+import Util.Scope.FuncScope;
 import Util.Scope.GlobalScope;
 
-public class SymbolCollector implements ASTVisitor {
+public class TypeCollector implements ASTVisitor {
     public GlobalScope globalScope = null;
-    public BaseScope currentScope = null;
+    BaseScope currentScope = null;
 
-    public SymbolCollector(GlobalScope globalScope) {
+    public TypeCollector(GlobalScope globalScope) {
         this.globalScope = globalScope;
     }
 
     @Override
     public void visit(RootNode it) {
         currentScope = globalScope;
+        //TODO why !(def instance of VarDefSubStmt)?
         it.defs.forEach(def -> def.accept(this));
     }
 
     @Override
     public void visit(ClassDef it) {
-        currentScope = new ClassScope(currentScope);
-        ClassEntity classEntity = new ClassEntity(it.name);
-        it.varDefs.forEach(var -> var.accept(this));
+        ClassEntity classEntity = globalScope.getClass(it.name, it.pos);
+        currentScope = classEntity.scope;
         it.funcDefs.forEach(func -> func.accept(this));
         it.constructors.forEach(cons -> cons.accept(this));
-        classEntity.scope = (ClassScope) currentScope;
         currentScope = currentScope.parentScope;
-        globalScope.defineClass(it.name, classEntity, it.pos);
-        if (globalScope.containFunc(it.name, false))
-            throw new SemanticError(it.name + ": conflict with a function", it.pos);
     }
 
     @Override
     public void visit(FuncDef it) {
-        FuncEntity funcEntity = new FuncEntity(globalScope.getBaseType(it.type), it.name);
-        it.funcEntity = funcEntity;
-        currentScope.defineFunc(it.name, funcEntity, it.pos);
-        if (globalScope.containClass(it.name))
-            throw new SemanticError(it.name + ": conflict with a class", it.pos);
+        if (it.isConstructor) it.funcEntity.type = null;
+        else it.funcEntity.type = globalScope.getBaseType(it.type);
+        currentScope = new FuncScope(currentScope);
+        it.paras.forEach(para -> para.accept(this));
+        it.funcEntity.scope = (FuncScope) currentScope;
+        currentScope = currentScope.parentScope;
     }
 
     @Override
@@ -161,6 +155,12 @@ public class SymbolCollector implements ASTVisitor {
 
     @Override
     public void visit(VarDefSubStmt it) {
+        VarEntity varEntity = new VarEntity(globalScope.getBaseType(it.type), it.name, false);
+        if (varEntity.type.isVoid())
+            throw new SemanticError("a parameter should have a type", it.pos);
+        it.varEntity = varEntity;
+        if(currentScope instanceof FuncScope)
+            ((FuncScope) currentScope).addPara(varEntity, it.pos);
     }
 
     @Override

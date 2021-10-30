@@ -1,18 +1,16 @@
 package AST.Expr;
 
+import AST.ASTNode;
 import AST.ASTVisitor;
-import AST.Program.TypeNode;
 import Util.Position;
 
 import java.util.ArrayList;
 
-public class NewExpr extends BaseExpr {
-    public TypeNode typeNode;
-    public ArrayList<BaseExpr> exprs;
+public class ExprList extends ASTNode {
+    public ArrayList<BaseExpr> exprs = new ArrayList<>();
 
-    public NewExpr(TypeNode typeNode, ArrayList<BaseExpr> exprs, Position pos) {
+    public ExprList(ArrayList<BaseExpr> exprs, Position pos) {
         super(pos);
-        this.typeNode = typeNode;
         this.exprs = exprs;
     }
 

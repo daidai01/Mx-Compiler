@@ -1,20 +1,24 @@
 package AST.Program;
 
 import AST.ASTVisitor;
-import AST.Stmt.VarDefStmt;
+import AST.Stmt.VarDefSubStmt;
 import Util.Position;
 
 import java.util.ArrayList;
 
 public class ClassDef extends BaseDef {
-    public String name;
+//    public String name;
     public boolean hasConstructor = false;
-    public ArrayList<VarDefStmt> varDefs = new ArrayList<>();
-    public ArrayList<FunDef> funcDefs = new ArrayList<>();
-    public ArrayList<FunDef> constructors = new ArrayList<>();
+    public ArrayList<VarDefSubStmt> varDefs = new ArrayList<>();
+    public ArrayList<FuncDef> funcDefs = new ArrayList<>();
+    public ArrayList<FuncDef> constructors = new ArrayList<>();
 
-    public ClassDef(Position pos, String name) {
+    public ClassDef(Position pos, String name, boolean hasConstructor, ArrayList<VarDefSubStmt> varDefs, ArrayList<FuncDef> funcDefs, ArrayList<FuncDef> constructors) {
         super(name, pos);
+        this.hasConstructor = hasConstructor;
+        this.varDefs = varDefs;
+        this.funcDefs = funcDefs;
+        this.constructors = constructors;
     }
 
     @Override

@@ -9,7 +9,7 @@ public class IfStmt extends BaseStmt {
     public BaseStmt trueStmt;
     public BaseStmt falseStmt;
 
-    public IfStmt(BaseExpr condition, BlockStmt trueStmt, BaseStmt falseStmt, Position pos) {
+    public IfStmt(BaseExpr condition, BaseStmt trueStmt, BaseStmt falseStmt, Position pos) {
         super(pos);
         this.condition = condition;
         this.trueStmt = trueStmt;

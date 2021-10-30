@@ -4,7 +4,7 @@ import AST.ASTNode;
 import Util.Position;
 
 abstract public class BaseDef extends ASTNode {
-    String name;
+    public String name;
 
     public BaseDef(String name, Position pos) {
         super(pos);

@@ -3,12 +3,14 @@ package AST.Stmt;
 import AST.ASTVisitor;
 import AST.Expr.BaseExpr;
 import AST.Program.TypeNode;
+import Util.Entity.VarEntity;
 import Util.Position;
 
 public class VarDefSubStmt extends BaseStmt {
     public TypeNode type;
     public String name;
     public BaseExpr init;
+    public VarEntity varEntity = null;
 
     public VarDefSubStmt(TypeNode type, String name, BaseExpr init, Position pos) {
         super(pos);

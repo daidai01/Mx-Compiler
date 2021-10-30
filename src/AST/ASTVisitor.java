@@ -4,14 +4,13 @@ import AST.Program.*;
 import AST.Expr.*;
 import AST.Stmt.*;
 
-//TODO: need to be updated if any file changes
 public interface ASTVisitor {
     //Program
     void visit(RootNode it);
 
     void visit(ClassDef it);
 
-    void visit(FunDef it);
+    void visit(FuncDef it);
 
     void visit(TypeNode it);
 
@@ -22,7 +21,11 @@ public interface ASTVisitor {
 
     void visit(BoolLiteralExpr it);
 
-    void visit(FunctionExpr it);
+    void visit(ExprList it);
+
+    void visit(FuncCallExpr it);
+
+    void visit(FuncExpr it);
 
     void visit(IndexExpr it);
 
@@ -41,6 +44,10 @@ public interface ASTVisitor {
     void visit(StringLiteralExpr it);
 
     void visit(SuffixExpr it);
+
+    void visit(ThisExpr it);
+
+    void visit(VarExpr it);
 
     //Stmt
     void visit(BlockStmt it);

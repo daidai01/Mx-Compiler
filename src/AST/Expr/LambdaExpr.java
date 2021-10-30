@@ -18,6 +18,7 @@ public class LambdaExpr extends BaseExpr {
         this.paras = paras;
         this.block = block;
         this.exprs = exprs;
+        assignable = false;
     }
 
     @Override

@@ -1,6 +1,8 @@
 package Util.Type;
 
-abstract public class BaseType {
+import Util.Entity.ClassEntity;
+
+public class BaseType {
     public String typeName;
     public int dim = 0;
 
@@ -8,28 +10,33 @@ abstract public class BaseType {
         this.typeName = typeName;
     }
 
+    public BaseType(String typeName, int dim) {
+        this.typeName = typeName;
+        this.dim = dim;
+    }
+
     public boolean equals(BaseType other) {
         return typeName.equals(other.typeName) && dim == other.dim;
     }
 
     public boolean isBool() {
-        return false;
+        return typeName.equals("bool") && dim == 0;
     }
 
     public boolean isInt() {
-        return false;
+        return typeName.equals("int") && dim == 0;
     }
 
     public boolean isVoid() {
-        return false;
+        return typeName.equals("void") && dim == 0;
     }
 
     public boolean isString() {
-        return false;
+        return typeName.equals("string") && dim == 0;
     }
 
     public boolean isNull() {
-        return false;
+        return typeName.equals("null") && dim == 0;
     }
 
     public boolean isArray() {
@@ -37,14 +44,7 @@ abstract public class BaseType {
     }
 
     public boolean isClass() {
-        return false;
-    }
-
-    public boolean isFunc(){
-        return false;
-    }
-
-    public boolean isConstructor(){
-        return false;
+        //TODO is this true?
+        return this instanceof ClassEntity;
     }
 }

@@ -10,14 +10,15 @@ public class BaseScope {
     public HashMap<String, VarEntity> vars = new HashMap<>();
     public HashMap<String, FuncEntity> funcs = new HashMap<>();
     public BaseScope parentScope = null;
-    //TODO: do I need constructor?
+    //TODO do I need constructor?
 
     public BaseScope(BaseScope parentScope) {
         this.parentScope = parentScope;
     }
 
     public void defineVar(String name, VarEntity var, Position pos) {
-        if (vars.containsKey(name)) throw new SemanticError(name + ": redefine var ", pos);
+        if (vars.containsKey(name))
+            throw new SemanticError(name + ": redefine var ", pos);
         vars.put(name, var);
     }
 
@@ -34,7 +35,8 @@ public class BaseScope {
     }
 
     public void defineFunc(String name, FuncEntity func, Position pos) {
-        if (funcs.containsKey(name)) throw new SemanticError(name + ": redefine function", pos);
+        if (funcs.containsKey(name))
+            throw new SemanticError(name + ": redefine function", pos);
         funcs.put(name, func);
     }
 
