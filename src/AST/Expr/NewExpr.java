@@ -14,6 +14,7 @@ public class NewExpr extends BaseExpr {
         super(pos);
         this.typeNode = typeNode;
         this.exprs = exprs;
+        assignable = true;
     }
 
     @Override

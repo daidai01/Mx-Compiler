@@ -9,6 +9,7 @@ import Parser.MxParser;
 import Util.Error.InternalError;
 import Util.Error.SyntaxError;
 import Util.Position;
+import Util.Type.ArrayType;
 import org.antlr.v4.runtime.ParserRuleContext;
 
 import java.util.ArrayList;
@@ -391,8 +392,11 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
 
     @Override
     public ASTNode visitReturnType(MxParser.ReturnTypeContext ctx) {
-        if (ctx.basicType() != null) return visit(ctx.basicType());
-        else return new TypeNode(new Position(ctx), "void", 0);
+        if (ctx.basicType() != null) {
+            TypeNode typeNode = (TypeNode) visit(ctx.basicType());
+            typeNode.setDim(ctx.LeftBracket().size());
+            return typeNode;
+        } else return new TypeNode(new Position(ctx), "void", 0);
     }
 
     @Override

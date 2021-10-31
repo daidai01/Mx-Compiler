@@ -14,7 +14,12 @@ public class TypeNode extends ASTNode {
         super(pos);
         this.name = name;
         this.dim = dim;
-        baseType = new BaseType(name);
+        baseType = new BaseType(name, dim);
+    }
+
+    public void setDim(int dim) {
+        this.dim = dim;
+        this.baseType.dim = dim;
     }
 
     @Override

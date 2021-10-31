@@ -11,7 +11,7 @@ public class BaseType {
     }
 
     public BaseType(String typeName, int dim) {
-        this.typeName = typeName;
+        if (typeName != null) this.typeName = typeName;
         this.dim = dim;
     }
 

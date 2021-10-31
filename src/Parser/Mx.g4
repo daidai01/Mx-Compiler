@@ -4,7 +4,7 @@ program : subProgram * EOF;
 
 subProgram : varDef | funcDef | classDef;
 varDef : varType subVar (',' subVar)* ';';
-funcDef : returnType Identifier '(' parameterList? ')' suite;
+funcDef : returnType? Identifier '(' parameterList? ')' suite;
 classDef : Class Identifier '{' (varDef | funcDef)* '}' ';';
 
 suite : '{' statement* '}';
@@ -16,7 +16,7 @@ statement
     | varDef                                                                         #varDefStmt
     | If '(' expression ')' trueStmt=statement (Else falseStmt=statement)?           #ifStmt
     | While '(' expression ')' statement                                             #whileStmt
-    | For '(' init=expression ';' cond=expression ';' incr=expression ')' statement  #forStmt
+    | For '(' init=expression? ';' cond=expression? ';' incr=expression? ')' statement  #forStmt
     | Return expression? ';'                                                         #returnStmt
     | Break ';'                                                                      #breakStmt
     | Continue ';'                                                                   #continueStmt
@@ -56,7 +56,7 @@ creator
     ;
 
 basicType : Bool | Int | String | Identifier;
-returnType : basicType | Void;
+returnType : basicType ('[' ']')* | Void;
 varType : basicType ('['']')*;
 
 Plus : '+';

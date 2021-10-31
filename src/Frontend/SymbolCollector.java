@@ -32,22 +32,22 @@ public class SymbolCollector implements ASTVisitor {
     public void visit(ClassDef it) {
         currentScope = new ClassScope(currentScope);
         ClassEntity classEntity = new ClassEntity(it.name);
+        globalScope.defineClass(it.name, classEntity, it.pos);
         it.varDefs.forEach(var -> var.accept(this));
         it.funcDefs.forEach(func -> func.accept(this));
         it.constructors.forEach(cons -> cons.accept(this));
         classEntity.scope = (ClassScope) currentScope;
         currentScope = currentScope.parentScope;
-        globalScope.defineClass(it.name, classEntity, it.pos);
         if (globalScope.containFunc(it.name, false))
             throw new SemanticError(it.name + ": conflict with a function", it.pos);
     }
 
     @Override
     public void visit(FuncDef it) {
-        FuncEntity funcEntity = new FuncEntity(globalScope.getBaseType(it.type), it.name);
+        FuncEntity funcEntity = new FuncEntity(null, it.name);
         it.funcEntity = funcEntity;
         currentScope.defineFunc(it.name, funcEntity, it.pos);
-        if (globalScope.containClass(it.name))
+        if (!it.isConstructor && globalScope.containClass(it.name))
             throw new SemanticError(it.name + ": conflict with a class", it.pos);
     }
 

@@ -20,4 +20,9 @@ public class ClassEntity extends BaseEntity {
     public void defineFunc(String name, FuncEntity func, Position pos) {
         scope.defineFunc(name, func, pos);
     }
+
+    @Override
+    public boolean isArray() {
+        return this.type.dim > 0;
+    }
 }

@@ -72,7 +72,7 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(FuncDef it) {
         if (it.isConstructor && !it.name.equals(currentClass.name))
             throw new SemanticError("constructor should have the same name with class", it.pos);
-        returnType = new PrimitiveType("void");
+        returnType = globalScope.getClass("void", it.pos);
         if (it.type != null) returnType = it.type.baseType;
         currentFunc = it.funcEntity;
         currentScope = currentFunc.scope;
@@ -96,6 +96,8 @@ public class SemanticChecker implements ASTVisitor {
         it.rightSrc.accept(this);
         if (!it.leftSrc.type.equals(it.rightSrc.type) && !it.rightSrc.type.isNull())
             throw new SemanticError("type mismatch", it.pos);
+        if ((it.leftSrc.type.isBool() || it.leftSrc.type.isInt()) && it.rightSrc.type.isNull())
+            throw new SemanticError("null cannot be assigned to primitive types", it.pos);
         if (!it.leftSrc.assignable)
             throw new SemanticError("left expression is not assignable", it.leftSrc.pos);
         it.type = it.leftSrc.type;
@@ -117,13 +119,13 @@ public class SemanticChecker implements ASTVisitor {
             case "|":
                 if (!it.src1.type.isInt() || !it.src2.type.isInt())
                     throw new SemanticError("there can only be int values", it.pos);
-                it.type = new PrimitiveType("int");
+                it.type = globalScope.getClass("int", it.pos);
                 break;
             case "+":
                 if (it.src1.type.isInt() && it.src2.type.isInt())
-                    it.type = new PrimitiveType("int");
+                    it.type = globalScope.getClass("int", it.pos);
                 else if (it.src1.type.isString() && it.src2.type.isString())
-                    it.type = new PrimitiveType("string");
+                    it.type = globalScope.getClass("string", it.pos);
                 else throw new SemanticError("there can only be pairs of int and string values", it.pos);
                 break;
             case ">":
@@ -133,19 +135,19 @@ public class SemanticChecker implements ASTVisitor {
                 if (it.src1.type.isInt() && it.src2.type.isInt()) ;
                 else if (it.src1.type.isString() && it.src2.type.isString()) ;
                 else throw new SemanticError("there can only be pairs of int and string values", it.pos);
-                it.type = new PrimitiveType("bool");
+                it.type = globalScope.getClass("bool", it.pos);
                 break;
             case "==":
             case "!=":
                 if (!it.src1.type.equals(it.src2.type))
                     throw new SemanticError("type mismatch", it.pos);
-                else it.type = new PrimitiveType("bool");
+                else it.type = globalScope.getClass("bool", it.pos);
                 break;
             case "&&":
             case "||":
                 if (!it.src1.type.isBool() || !it.src2.type.isBool())
                     throw new SemanticError("there can only be bool values", it.pos);
-                else it.type = new PrimitiveType("bool");
+                else it.type = globalScope.getClass("bool", it.pos);
                 break;
             default:
                 break;
@@ -154,7 +156,7 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(BoolLiteralExpr it) {
-        it.type = new PrimitiveType("bool");
+        it.type = globalScope.getClass("bool", it.pos);
     }
 
     @Override
@@ -165,6 +167,7 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(FuncCallExpr it) {
         it.name.accept(this);
         //TODO check this
+//        System.out.println(it.name.type);
         if (!(it.name.type instanceof FuncEntity))
             throw new SemanticError("not a function", it.pos);
         FuncEntity funcEntity = (FuncEntity) it.name.type;
@@ -178,6 +181,8 @@ public class SemanticChecker implements ASTVisitor {
                 throw new SemanticError("type mismatch", givenParas.get(i).pos);
         }
         it.type = it.name.type;
+        if (!it.type.isArray() && globalScope.containClass(((FuncEntity) it.type).type.typeName))
+            it.type = globalScope.getClass(((FuncEntity) it.type).type.typeName, it.pos);
     }
 
     @Override
@@ -195,12 +200,15 @@ public class SemanticChecker implements ASTVisitor {
             throw new SemanticError("not an array", it.pos);
         if (it.identifier.type.dim > 1)
             it.type = new ArrayType(it.identifier.type.typeName, it.identifier.type.dim - 1);
+        else if (globalScope.containClass(it.identifier.type.typeName))
+            it.type = globalScope.getClass(it.identifier.type.typeName, it.pos);
         else it.type = new PrimitiveType(it.identifier.type.typeName);
     }
 
     @Override
     public void visit(IntLiteralExpr it) {
-        it.type = new PrimitiveType("int");
+        it.type = globalScope.getClass("int", it.pos);
+        ;
     }
 
     @Override
@@ -220,35 +228,23 @@ public class SemanticChecker implements ASTVisitor {
                 return;
             }
             if (!it.expr.type.isClass())
-                throw new SemanticError("not a class", it.expr.pos);
+                throw new SemanticError(it.expr.type + ": not a class", it.expr.pos);
             ClassEntity classEntity = (ClassEntity) it.expr.type;
             if (classEntity.scope.containFunc(it.identifier, false))
                 it.type = classEntity.scope.getFunc(it.identifier, it.pos, false);
-            else throw new SemanticError("no sush function", it.pos);
-//            String[] builtinFunc = {"length", "substring", "parseInt", "ord", "print", "println",
-//                    "printInt", "printlnInt", "getString", "getInt", "toString", "size"};
-//            if (classEntity.scope != null && classEntity.scope.containFunc(it.identifier, false))
-//                it.type = classEntity.scope.getFunc(it.identifier, it.pos, false).type;
-//            else {
-//                boolean isBuiltin = false;
-//                for (String func : builtinFunc) {
-//                    if (it.identifier.equals(func))
-//                        isBuiltin = true;
-//                }
-//                if (isBuiltin)
-//                    it.type = globalScope.getFunc(it.identifier, it.pos, false).type;
-//                else throw new SemanticError("no such method", it.pos);
-//            }
+            else throw new SemanticError(it.identifier + ": no such function", it.pos);
         } else {
             if (!it.expr.type.isClass())
                 throw new SemanticError("not a class", it.expr.pos);
-            ClassEntity classEntity;
+//            ClassEntity classEntity;
 //            if (it.expr.type instanceof ClassEntity)
-            classEntity = (ClassEntity) it.expr.type;
+            ClassEntity classEntity = (ClassEntity) it.expr.type;
 //            else classEntity = new ClassEntity(it.expr.type, it.expr.type.typeName, null);
-            if (classEntity.scope.containVar(it.identifier, false))
+            if (classEntity.scope.containVar(it.identifier, false)) {
                 it.type = classEntity.scope.getVar(it.identifier, it.pos, false).type;
-            else throw new SemanticError("no such member", it.pos);
+                if (globalScope.containClass(it.type.typeName))
+                    it.type = globalScope.getClass(it.type.typeName, it.pos);
+            } else throw new SemanticError("no such member", it.pos);
         }
     }
 
@@ -259,12 +255,13 @@ public class SemanticChecker implements ASTVisitor {
             if (!expr.type.isInt())
                 throw new SemanticError("array index is not int", expr.pos);
         }
-        it.type = globalScope.getBaseType(it.typeNode);
+        it.type = globalScope.getClass(it.typeNode);
     }
 
     @Override
     public void visit(NullLiteralExpr it) {
-        it.type = new PrimitiveType("null");
+        it.type = globalScope.getClass("null", it.pos);
+        ;
     }
 
     @Override
@@ -296,7 +293,7 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(StringLiteralExpr it) {
-        it.type = new PrimitiveType("string");
+        it.type = globalScope.getClass("string", it.pos);
     }
 
     @Override
@@ -320,7 +317,8 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(VarExpr it) {
         it.varEntity = currentScope.getVar(it.identifier, it.pos, true);
-        it.type = it.varEntity.type;
+        if (it.varEntity.type.isArray()) it.type = it.varEntity.type;
+        else it.type = globalScope.getClass(it.varEntity.typeName, it.pos);
     }
 
     @Override
@@ -391,7 +389,11 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(ReturnStmt it) {
         if (it.expr != null) {
             it.expr.accept(this);
-            if (!it.expr.type.equals(returnType))
+//            System.out.println(it.expr.type.typeName);
+//            System.out.println(it.expr.type.dim);//1
+//            System.out.println(returnType.typeName);
+//            System.out.println(returnType.dim);//0
+            if (!((BaseType) it.expr.type).equals(returnType))
                 throw new SemanticError("wrong return type", it.pos);
         } else if (!returnType.isVoid())
             throw new SemanticError("missing return value", it.pos);
@@ -405,18 +407,21 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(VarDefSubStmt it) {
-        BaseType varType = globalScope.getBaseType(it.type);
-//        if (!globalScope.containClass(it.type.name))
-//            throw new SemanticError("undefined type", it.pos);
+        ClassEntity varType = globalScope.getClass(it.type);
         if (varType.isVoid())
             throw new SemanticError("void variable", it.pos);
         if (it.init != null) {
             it.init.accept(this);
-            if (!it.init.type.equals(varType))
-                throw new SemanticError("mismatch type", it.init.pos);
+//            System.out.println(it.init.type.dim);//0
+//            System.out.println(varType.dim);//1
+            if (it.init.type.equals(varType)) ;
+            else if ((!varType.typeName.equals("int") || !varType.typeName.equals("bool")) && it.init.type.isNull()) ;
+            else throw new SemanticError("mismatch type", it.init.pos);
         }
         VarEntity varEntity = new VarEntity(varType, it.name, currentScope == globalScope);
         it.varEntity = varEntity;
+        if (globalScope.containClass(it.name))
+            throw new SemanticError(it.name + ": conflict with a class", it.pos);
         currentScope.defineVar(it.name, varEntity, it.pos);
     }
 

@@ -17,6 +17,13 @@ public class FuncEntity extends BaseEntity {
         this.scope = scope;
     }
 
+    public void check() {
+        if (type != null) {
+            this.typeName = type.typeName;
+            this.dim = type.dim;
+        }
+    }
+
     public void addPara(VarEntity para, Position pos) {
         scope.addPara(para, pos);
     }

@@ -22,8 +22,8 @@ public class GlobalScope extends BaseScope {
         PrimitiveType boolType = new PrimitiveType("bool");
         PrimitiveType intType = new PrimitiveType("int");
         PrimitiveType voidType = new PrimitiveType("void");
-        PrimitiveType stringType = new PrimitiveType("string");
         PrimitiveType nullType = new PrimitiveType("null");
+        ClassEntity stringType = new ClassEntity("string");
 
         //builtin types
         ClassEntity boolEntity = new ClassEntity(boolType, "bool", new ClassScope(this));
@@ -106,8 +106,19 @@ public class GlobalScope extends BaseScope {
         else return classes.get(name);
     }
 
-    public BaseType getBaseType(TypeNode typeNode) {
+    public ClassEntity getClass(TypeNode typeNode) {
         if (typeNode.dim == 0)
+            return getClass(typeNode.name, typeNode.pos);
+        else {
+            ClassScope classScope = getClass(typeNode.name, typeNode.pos).scope;
+            return new ClassEntity(typeNode.baseType, typeNode.name, classScope);
+        }
+    }
+
+    public BaseType getBaseType(TypeNode typeNode) {
+        if (typeNode == null)
+            return null;
+        else if (typeNode.dim == 0)
             return getClass(typeNode.name, typeNode.pos).type;
         else return new ArrayType(getClass(typeNode.name, typeNode.pos).name, typeNode.dim);
     }

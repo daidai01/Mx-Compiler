@@ -47,8 +47,11 @@ public class BaseScope {
     }
 
     public FuncEntity getFunc(String name, Position pos, boolean lookUpon) {
-        if (funcs.containsKey(name)) return funcs.get(name);
-        if (parentScope != null && lookUpon) return parentScope.getFunc(name, pos, true);
+        if (funcs.containsKey(name)) {
+            FuncEntity func = funcs.get(name);
+            func.check();
+            return func;
+        } else if (parentScope != null && lookUpon) return parentScope.getFunc(name, pos, true);
         throw new SemanticError(name + ": undefined function", pos);
     }
 }

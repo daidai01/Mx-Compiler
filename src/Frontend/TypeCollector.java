@@ -8,6 +8,7 @@ import Util.Entity.ClassEntity;
 import Util.Entity.VarEntity;
 import Util.Error.SemanticError;
 import Util.Scope.BaseScope;
+import Util.Scope.ClassScope;
 import Util.Scope.FuncScope;
 import Util.Scope.GlobalScope;
 
@@ -30,6 +31,7 @@ public class TypeCollector implements ASTVisitor {
     public void visit(ClassDef it) {
         ClassEntity classEntity = globalScope.getClass(it.name, it.pos);
         currentScope = classEntity.scope;
+        it.varDefs.forEach(var -> var.accept(this));
         it.funcDefs.forEach(func -> func.accept(this));
         it.constructors.forEach(cons -> cons.accept(this));
         currentScope = currentScope.parentScope;
@@ -38,7 +40,7 @@ public class TypeCollector implements ASTVisitor {
     @Override
     public void visit(FuncDef it) {
         if (it.isConstructor) it.funcEntity.type = null;
-        else it.funcEntity.type = globalScope.getBaseType(it.type);
+        else it.funcEntity.type = globalScope.getClass(it.type);
         currentScope = new FuncScope(currentScope);
         it.paras.forEach(para -> para.accept(this));
         it.funcEntity.scope = (FuncScope) currentScope;
@@ -151,6 +153,7 @@ public class TypeCollector implements ASTVisitor {
 
     @Override
     public void visit(VarDefStmt it) {
+        it.vars.forEach(var -> var.accept(this));
     }
 
     @Override
@@ -159,8 +162,10 @@ public class TypeCollector implements ASTVisitor {
         if (varEntity.type.isVoid())
             throw new SemanticError("a parameter should have a type", it.pos);
         it.varEntity = varEntity;
-        if(currentScope instanceof FuncScope)
+        if (currentScope instanceof FuncScope)
             ((FuncScope) currentScope).addPara(varEntity, it.pos);
+        else if (currentScope instanceof ClassScope)
+            ((ClassScope) currentScope).defineVar(varEntity.name, varEntity, it.pos);
     }
 
     @Override
