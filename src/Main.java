@@ -30,9 +30,7 @@ public class Main {
             ParseTree parseTreeRoot = parser.program();
             ASTBuilder astBuilder = new ASTBuilder();
             RootNode ASTRoot = (RootNode) astBuilder.visit(parseTreeRoot);
-//            System.out.println(globalScope.containClass("A"));
             SymbolCollector symbolCollector = new SymbolCollector(globalScope);
-//            System.out.println(globalScope.containClass("A"));
             ASTRoot.accept(symbolCollector);
             TypeCollector typeCollector = new TypeCollector(globalScope);
             ASTRoot.accept(typeCollector);

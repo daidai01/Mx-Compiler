@@ -12,47 +12,47 @@ subVar : Identifier ('=' expression)?;
 parameterList : varType Identifier (',' varType Identifier)*;
 
 statement
-    : suite                                                                          #block
-    | varDef                                                                         #varDefStmt
-    | If '(' expression ')' trueStmt=statement (Else falseStmt=statement)?           #ifStmt
-    | While '(' expression ')' statement                                             #whileStmt
+    : suite                                                                             #block
+    | varDef                                                                            #varDefStmt
+    | If '(' expression ')' trueStmt=statement (Else falseStmt=statement)?              #ifStmt
+    | While '(' expression ')' statement                                                #whileStmt
     | For '(' init=expression? ';' cond=expression? ';' incr=expression? ')' statement  #forStmt
-    | Return expression? ';'                                                         #returnStmt
-    | Break ';'                                                                      #breakStmt
-    | Continue ';'                                                                   #continueStmt
-    | expression ';'                                                                 #pureExprStmt
-    | ';'                                                                            #emptyStmt
+    | Return expression? ';'                                                            #returnStmt
+    | Break ';'                                                                         #breakStmt
+    | Continue ';'                                                                      #continueStmt
+    | expression ';'                                                                    #pureExprStmt
+    | ';'                                                                               #emptyStmt
     ;
 
 expression
     : primary #atomExpr
-    | '[' '&' ']' ('(' parameterList ')')* '-' '>'  suite '(' expressionList? ')'    #lambdaExpr
-    | <assoc=right> New creator                                                      #newExpr
-    | expression '[' expression ']'                                                  #indexExpr //2
-    | expression '(' expressionList? ')'                                             #functionExpr //2
-    | expression '.' Identifier                                                      #memberExpr //2
-    | expression op=('++' | '--')                                                    #suffixExpr //2
-    | <assoc=right> op=('!' | '~' | '++' | '--' | '+' | '-') expression              #prefixExpr //3
-    | expression op=('*' | '/' | '%') expression                                     #binaryExpr //5
-    | expression op=('+' | '-') expression                                           #binaryExpr //6
-    | expression op=('<<' | '>>') expression                                         #binaryExpr //7
-    | expression op=('>' | '<' | '>=' | '<=') expression                             #binaryExpr //8
-    | expression op=('==' | '!=') expression                                         #binaryExpr //9
-    | expression op='&' expression                                                   #binaryExpr //10
-    | expression op='^' expression                                                   #binaryExpr //11
-    | expression op='|' expression                                                   #binaryExpr //12
-    | expression op='&&' expression                                                  #binaryExpr //13
-    | expression op='||' expression                                                  #binaryExpr //14
-    | <assoc=right> expression '=' expression                                        #assignExpr //16
+    | '[' '&' ']' ('(' parameterList? ')')? '-' '>'  suite '(' expressionList? ')'       #lambdaExpr
+    | <assoc=right> New creator                                                         #newExpr
+    | expression '[' expression ']'                                                     #indexExpr //2
+    | expression '(' expressionList? ')'                                                #functionExpr //2
+    | expression '.' Identifier                                                         #memberExpr //2
+    | expression op=('++' | '--')                                                       #suffixExpr //2
+    | <assoc=right> op=('!' | '~' | '++' | '--' | '+' | '-') expression                 #prefixExpr //3
+    | expression op=('*' | '/' | '%') expression                                        #binaryExpr //5
+    | expression op=('+' | '-') expression                                              #binaryExpr //6
+    | expression op=('<<' | '>>') expression                                            #binaryExpr //7
+    | expression op=('>' | '<' | '>=' | '<=') expression                                #binaryExpr //8
+    | expression op=('==' | '!=') expression                                            #binaryExpr //9
+    | expression op='&' expression                                                      #binaryExpr //10
+    | expression op='^' expression                                                      #binaryExpr //11
+    | expression op='|' expression                                                      #binaryExpr //12
+    | expression op='&&' expression                                                     #binaryExpr //13
+    | expression op='||' expression                                                     #binaryExpr //14
+    | <assoc=right> expression '=' expression                                           #assignExpr //16
     ;
 
 primary : '(' expression ')' | Identifier | literal | This;
 literal : True | False | ConstInteger | ConstString | Null;
 expressionList : expression (',' expression)*;
 creator
-    : basicType ('[' expression ']')+ ('[' ']')+ ('[' expression ']')+               #wrongCreator
-    | basicType ('[' expression ']')+ ('[' ']')*                                     #arrayCreator
-    | basicType ('(' ')')?                                                           #basicCreator
+    : basicType ('[' expression ']')+ ('[' ']')+ ('[' expression ']')+                  #wrongCreator
+    | basicType ('[' expression ']')+ ('[' ']')*                                        #arrayCreator
+    | basicType ('(' ')')?                                                              #basicCreator
     ;
 
 basicType : Bool | Int | String | Identifier;

@@ -228,16 +228,18 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         BlockStmt block = (BlockStmt) visit(ctx.suite());
         ArrayList<BaseExpr> exprs = new ArrayList<>();
         if (ctx.parameterList() != null) {
-            for (int i = 0; i < ctx.parameterList(0).varType().size(); ++i) {
-                TypeNode type = (TypeNode) visit(ctx.parameterList(0).varType(i));
-                String identifier = ctx.parameterList(0).Identifier(i).getText();
-                VarDefSubStmt tmp = new VarDefSubStmt(type, identifier, null, new Position(ctx.parameterList(0).varType(i)));
+            for (int i = 0; i < ctx.parameterList().varType().size(); ++i) {
+                TypeNode type = (TypeNode) visit(ctx.parameterList().varType(i));
+                String identifier = ctx.parameterList().Identifier(i).getText();
+                VarDefSubStmt tmp = new VarDefSubStmt(type, identifier, null, new Position(ctx.parameterList().varType(i)));
                 paras.add(tmp);
             }
         }
-        for (ParserRuleContext obj : ctx.expressionList().expression()) {
-            BaseExpr tmp = (BaseExpr) visit(obj);
-            exprs.add(tmp);
+        if (ctx.expressionList() != null) {
+            for (ParserRuleContext obj : ctx.expressionList().expression()) {
+                BaseExpr tmp = (BaseExpr) visit(obj);
+                exprs.add(tmp);
+            }
         }
         return new LambdaExpr(paras, block, exprs, new Position(ctx));
     }

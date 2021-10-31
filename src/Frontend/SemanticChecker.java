@@ -21,8 +21,6 @@ import Util.Type.PrimitiveType;
 import java.util.ArrayList;
 import java.util.Stack;
 
-//TODO: consider Lambda
-
 public class SemanticChecker implements ASTVisitor {
     public GlobalScope globalScope = null;
     public BaseScope currentScope = null;
@@ -31,6 +29,11 @@ public class SemanticChecker implements ASTVisitor {
     public BaseType returnType = null;
     public boolean hasReturn = false;
     public Stack<ASTNode> loops = new Stack<>();
+
+    //Lambda
+    public int isLambda = 0;
+    public BaseType lambdaReturnType = null;
+    public boolean lambdaHasReturn = false;
 
     public SemanticChecker(GlobalScope globalScope) {
         this.globalScope = globalScope;
@@ -216,7 +219,32 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(LambdaExpr it) {
-        //TODO
+        if (it.paras.size() != it.exprs.size())
+            throw new SemanticError("different number of lambda paras and exprs", it.pos);
+        currentScope = new BaseScope(currentScope);
+        isLambda++;
+        it.paras.forEach(para -> para.accept(this));
+        it.exprs.forEach(expr -> expr.accept(this));
+        if (!it.paras.isEmpty()) {
+            for (int i = 0; i < it.paras.size(); ++i) {
+                BaseType paraType = globalScope.getClass(it.paras.get(i).type);
+                BaseType exprType = globalScope.getClass(it.exprs.get(i).type.typeName, it.exprs.get(i).pos);
+                if (!paraType.equals(exprType))
+                    throw new SemanticError("expr type different from para in lambda", it.exprs.get(i).pos);
+            }
+        }
+        lambdaHasReturn = false;
+        it.block.accept(this);
+        if (lambdaHasReturn) {
+//            if (lambdaReturnType == null)
+//                throw new SemanticError("no return", it.pos);
+//            else
+            it.type = lambdaReturnType;
+        } else it.type = globalScope.getClass("void", it.pos);
+        isLambda--;
+        lambdaHasReturn = false;
+//        lambdaReturnType = null;
+        currentScope = currentScope.parentScope;
     }
 
     @Override
@@ -390,17 +418,25 @@ public class SemanticChecker implements ASTVisitor {
 
     @Override
     public void visit(ReturnStmt it) {
-        if (it.expr != null) {
-            it.expr.accept(this);
+        if (isLambda != 0) {
+            if (it.expr != null) {
+                it.expr.accept(this);
+                lambdaReturnType = it.expr.type;
+            } else lambdaReturnType = globalScope.getClass("void", it.pos);
+            lambdaHasReturn = true;
+        } else {
+            if (it.expr != null) {
+                it.expr.accept(this);
 //            System.out.println(it.expr.type.typeName);
 //            System.out.println(it.expr.type.dim);//1
 //            System.out.println(returnType.typeName);
 //            System.out.println(returnType.dim);//0
-            if (!((BaseType) it.expr.type).equals(returnType))
-                throw new SemanticError("wrong return type", it.pos);
-        } else if (!returnType.isVoid())
-            throw new SemanticError("missing return value", it.pos);
-        hasReturn = true;
+                if (!((BaseType) it.expr.type).equals(returnType))
+                    throw new SemanticError("wrong return type", it.pos);
+            } else if (!returnType.isVoid())
+                throw new SemanticError("missing return value", it.pos);
+            hasReturn = true;
+        }
     }
 
     @Override
@@ -415,6 +451,8 @@ public class SemanticChecker implements ASTVisitor {
             throw new SemanticError("void variable", it.pos);
         if (it.init != null) {
             it.init.accept(this);
+//            System.out.println(it.init.type.typeName);
+//            System.out.println(varType.typeName);
 //            System.out.println(it.init.type.dim);//0
 //            System.out.println(varType.dim);//1
             if (it.init.type.equals(varType)) ;
