@@ -139,9 +139,11 @@ public class SemanticChecker implements ASTVisitor {
                 break;
             case "==":
             case "!=":
-                if (!it.src1.type.equals(it.src2.type))
-                    throw new SemanticError("type mismatch", it.pos);
-                else it.type = globalScope.getClass("bool", it.pos);
+                if (it.src1.type.equals(it.src2.type)) ;
+                else if (it.src1.type.typeName.equals("null") && !it.src2.type.isPrimitive()) ;
+                else if (it.src2.type.typeName.equals("null") && !it.src1.type.isPrimitive()) ;
+                else throw new SemanticError("type mismatch", it.pos);
+                it.type = globalScope.getClass("bool", it.pos);
                 break;
             case "&&":
             case "||":
@@ -177,8 +179,9 @@ public class SemanticChecker implements ASTVisitor {
             throw new SemanticError("wrong number of parameters", it.pos);
         for (int i = 0; i < givenParas.size(); ++i) {
             givenParas.forEach(para -> para.accept(this));
-            if (!givenParas.get(i).type.equals(requiredParas.get(i).type))
-                throw new SemanticError("type mismatch", givenParas.get(i).pos);
+            if (givenParas.get(i).type.equals(requiredParas.get(i).type)) ;
+            else if (givenParas.get(i).type.typeName.equals("null") && !requiredParas.get(i).type.isPrimitive()) ;
+            else throw new SemanticError("type mismatch", givenParas.get(i).pos);
         }
         it.type = it.name.type;
         if (!it.type.isArray() && globalScope.containClass(((FuncEntity) it.type).type.typeName))
@@ -242,7 +245,7 @@ public class SemanticChecker implements ASTVisitor {
 //            else classEntity = new ClassEntity(it.expr.type, it.expr.type.typeName, null);
             if (classEntity.scope.containVar(it.identifier, false)) {
                 it.type = classEntity.scope.getVar(it.identifier, it.pos, false).type;
-                if (globalScope.containClass(it.type.typeName))
+                if (!it.type.isArray() && globalScope.containClass(it.type.typeName))
                     it.type = globalScope.getClass(it.type.typeName, it.pos);
             } else throw new SemanticError("no such member", it.pos);
         }

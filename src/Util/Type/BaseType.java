@@ -16,7 +16,10 @@ public class BaseType {
     }
 
     public boolean equals(BaseType other) {
-        return typeName.equals(other.typeName) && dim == other.dim;
+        if (typeName.equals(other.typeName) && dim == other.dim) return true;
+        else if (typeName.equals("null") && !other.isPrimitive()) return true;
+        else if (other.typeName.equals("null") && !isPrimitive()) return true;
+        else return false;
     }
 
     public boolean isBool() {
@@ -46,5 +49,9 @@ public class BaseType {
     public boolean isClass() {
         //TODO is this true?
         return this instanceof ClassEntity;
+    }
+
+    public boolean isPrimitive() {
+        return this.isInt() || this.isBool();
     }
 }
