@@ -9,7 +9,7 @@ public class StringOperand extends BaseOperand {
     public String value;
 
     public StringOperand(String value) {
-        super(new PointerIRType(new ArrayIRType(new IntIRType(1), value.length())));
+        super(new PointerIRType(new ArrayIRType(new IntIRType(IntIRType.BitWidth.int8), value.length())));
         this.value = value;
     }
 

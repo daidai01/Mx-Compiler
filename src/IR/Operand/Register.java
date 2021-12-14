@@ -1,13 +1,13 @@
 package IR.Operand;
 
-import IR.Program.Function;
+import IR.Instruction.BaseInst;
 import IR.Type.BaseIRType;
 
-public class ParaOperand extends BaseOperand {
+public class Register extends BaseOperand {
     public String name;
-    public Function func;
+    public BaseInst inst;
 
-    public ParaOperand(BaseIRType type, String name) {
+    public Register(BaseIRType type, String name) {
         super(type);
         this.name = name;
     }

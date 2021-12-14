@@ -1,20 +1,23 @@
 package IR.Type;
 
 public class IntIRType extends BaseIRType {
-    public int size;
+    public enum BitWidth {int1, int8, int32}
 
-    public IntIRType(int size) {
-        super();
-        this.size = size;
+    public BitWidth bitWidth;
+
+    public IntIRType(BitWidth bitWidth) {
+        this.bitWidth = bitWidth;
     }
 
     @Override
     public int getBytes() {
-        return size;
+        if (bitWidth == BitWidth.int1) return 1;
+        else if (bitWidth == BitWidth.int8) return 1;
+        else return 4;
     }
 
     @Override
     public boolean equals(BaseIRType other) {
-        return other instanceof IntIRType && size == ((IntIRType) other).size;
+        return other instanceof IntIRType && bitWidth == ((IntIRType) other).bitWidth;
     }
 }

@@ -6,8 +6,8 @@ import IR.Type.IntIRType;
 public class IntOperand extends BaseOperand {
     public int value;
 
-    public IntOperand(int value, int size) {
-        super(new IntIRType(size));
+    public IntOperand(int value, IntIRType.BitWidth bitWidth) {
+        super(new IntIRType(bitWidth));
         this.value = value;
     }
 
