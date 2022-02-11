@@ -22,6 +22,12 @@ public class BaseType {
         else return false;
     }
 
+    public int size() {
+        if (this.isArray() || this.isClass() || this.isInt()) return 32;
+        else if (this.isBool()) return 8;
+        else return 0;
+    }
+
     public boolean isBool() {
         return typeName.equals("bool") && dim == 0;
     }

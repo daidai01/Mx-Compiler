@@ -6,9 +6,9 @@ import Util.Type.BaseType;
 
 public class ClassEntity extends BaseEntity {
     public ClassScope scope = null;
+    public int allocSize = 0;
 
     public ClassEntity(String name) {
-        //TODO how to define type of a class
         super(new BaseType(name), name);
     }
 
@@ -19,6 +19,11 @@ public class ClassEntity extends BaseEntity {
 
     public void defineFunc(String name, FuncEntity func, Position pos) {
         scope.defineFunc(name, func, pos);
+    }
+
+    public int addAllocSize(BaseType type) {
+        allocSize += type.size();
+        return allocSize;
     }
 
     @Override

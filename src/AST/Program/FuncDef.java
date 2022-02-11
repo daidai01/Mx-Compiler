@@ -9,12 +9,12 @@ import Util.Position;
 import java.util.ArrayList;
 
 public class FuncDef extends BaseDef {
-    //    public String name;
     public TypeNode type;
     public boolean isConstructor = false;
     public BlockStmt block;
     public ArrayList<VarDefSubStmt> paras = new ArrayList<>();
     public FuncEntity funcEntity = null;
+    public boolean isMethod = false;
 
     public FuncDef(Position pos, String name, TypeNode type, BlockStmt block, ArrayList<VarDefSubStmt> paras) {
         super(name, pos);
@@ -25,7 +25,6 @@ public class FuncDef extends BaseDef {
 
     public FuncDef(Position pos, String name, TypeNode type, BlockStmt block, ArrayList<VarDefSubStmt> paras, boolean isConstructor) {
         super(name, pos);
-//        this.name = name;
         this.type = type;
         this.isConstructor = isConstructor;
         this.block = block;

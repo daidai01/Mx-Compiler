@@ -10,7 +10,7 @@ public class BaseScope {
     public HashMap<String, VarEntity> vars = new HashMap<>();
     public HashMap<String, FuncEntity> funcs = new HashMap<>();
     public BaseScope parentScope = null;
-    //TODO do I need constructor?
+    public FuncEntity constructor = null;
 
     public BaseScope(BaseScope parentScope) {
         this.parentScope = parentScope;
@@ -38,6 +38,13 @@ public class BaseScope {
         if (funcs.containsKey(name))
             throw new SemanticError(name + ": redefine function", pos);
         funcs.put(name, func);
+    }
+
+    public void defineFunc(String name, FuncEntity func, Position pos, boolean isConstructor) {
+        if (funcs.containsKey(name))
+            throw new SemanticError(name + ": redefine function", pos);
+        funcs.put(name, func);
+        if (isConstructor) constructor = func;
     }
 
     public boolean containFunc(String name, boolean lookUpon) {

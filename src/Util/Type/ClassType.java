@@ -3,7 +3,7 @@ package Util.Type;
 import java.util.HashMap;
 
 public class ClassType extends BaseType{
-//TODO
+//todo
 
     public ClassType(String typeName) {
         super(typeName);

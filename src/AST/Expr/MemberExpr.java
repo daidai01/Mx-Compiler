@@ -1,12 +1,14 @@
 package AST.Expr;
 
 import AST.ASTVisitor;
+import Util.Entity.VarEntity;
 import Util.Position;
 
 public class MemberExpr extends BaseExpr {
     public BaseExpr expr;
     public String identifier;
     public boolean isFunc = false;
+    public VarEntity varEntity = null;
 
     public MemberExpr(BaseExpr expr, String identifier, Position pos) {
         super(pos);

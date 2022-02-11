@@ -80,6 +80,7 @@ public class ASTBuilder extends MxBaseVisitor<ASTNode> {
         }
         for (ParserRuleContext obj : ctx.funcDef()) {
             FuncDef tmp = (FuncDef) visit(obj);
+            tmp.isMethod = true;
             if (tmp.isConstructor) {
                 hasConstructor = true;
                 constructors.add(tmp);

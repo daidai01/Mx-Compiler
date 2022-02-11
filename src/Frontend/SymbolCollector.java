@@ -7,6 +7,7 @@ import AST.Program.FuncDef;
 import AST.Program.RootNode;
 import AST.Program.TypeNode;
 import AST.Stmt.*;
+import IR.Type.ClassIRType;
 import Util.Entity.ClassEntity;
 import Util.Entity.FuncEntity;
 import Util.Error.SemanticError;
@@ -17,9 +18,11 @@ import Util.Scope.GlobalScope;
 public class SymbolCollector implements ASTVisitor {
     public GlobalScope globalScope = null;
     public BaseScope currentScope = null;
+    public IR.Program.IRRoot IRRoot = null;
 
-    public SymbolCollector(GlobalScope globalScope) {
+    public SymbolCollector(GlobalScope globalScope, IR.Program.IRRoot IRRoot) {
         this.globalScope = globalScope;
+        this.IRRoot = IRRoot;
     }
 
     @Override
@@ -33,6 +36,7 @@ public class SymbolCollector implements ASTVisitor {
         currentScope = new ClassScope(currentScope);
         ClassEntity classEntity = new ClassEntity(it.name);
         globalScope.defineClass(it.name, classEntity, it.pos);
+        IRRoot.types.put(it.name, new ClassIRType(it.name));
         it.varDefs.forEach(var -> var.accept(this));
         it.funcDefs.forEach(func -> func.accept(this));
         it.constructors.forEach(cons -> cons.accept(this));
@@ -44,9 +48,9 @@ public class SymbolCollector implements ASTVisitor {
 
     @Override
     public void visit(FuncDef it) {
-        FuncEntity funcEntity = new FuncEntity(null, it.name);
+        FuncEntity funcEntity = new FuncEntity(null, it.name, currentScope != globalScope);
         it.funcEntity = funcEntity;
-        currentScope.defineFunc(it.name, funcEntity, it.pos);
+        currentScope.defineFunc(it.name, funcEntity, it.pos, it.isConstructor);
         if (!it.isConstructor && globalScope.containClass(it.name))
             throw new SemanticError(it.name + ": conflict with a class", it.pos);
     }

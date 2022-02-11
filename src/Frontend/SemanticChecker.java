@@ -8,15 +8,21 @@ import AST.Program.FuncDef;
 import AST.Program.RootNode;
 import AST.Program.TypeNode;
 import AST.Stmt.*;
+import IR.Operand.IntOperand;
+import IR.Type.BaseIRType;
+import IR.Type.ClassIRType;
+import IR.Type.PointerIRType;
 import Util.Entity.ClassEntity;
 import Util.Entity.FuncEntity;
 import Util.Entity.VarEntity;
 import Util.Error.SemanticError;
 import Util.Scope.BaseScope;
+import Util.Scope.ClassScope;
 import Util.Scope.GlobalScope;
 import Util.Type.ArrayType;
 import Util.Type.BaseType;
 import Util.Type.PrimitiveType;
+import com.sun.jdi.ClassType;
 
 import java.util.ArrayList;
 import java.util.Stack;
@@ -35,8 +41,13 @@ public class SemanticChecker implements ASTVisitor {
     public BaseType lambdaReturnType = null;
     public boolean lambdaHasReturn = false;
 
-    public SemanticChecker(GlobalScope globalScope) {
+    //IR
+    public IR.Program.IRRoot IRRoot = null;
+    public ClassIRType currentIRClass = null;
+
+    public SemanticChecker(GlobalScope globalScope, IR.Program.IRRoot IRRoot) {
         this.globalScope = globalScope;
+        this.IRRoot = IRRoot;
     }
 
     @Override
@@ -58,6 +69,7 @@ public class SemanticChecker implements ASTVisitor {
         ClassEntity classEntity = globalScope.getClass(it.name, it.pos);
         currentClass = classEntity;
         currentScope = classEntity.scope;
+        currentIRClass = IRRoot.types.get(it.name);
 //        classEntity.scope.vars.forEach((key, value) -> currentScope.defineVar(key, value, it.pos));
 //        classEntity.scope.funcs.forEach((key, value) -> currentScope.defineFunc(key, value, it.pos));
         for (FuncDef function : it.funcDefs)
@@ -272,7 +284,8 @@ public class SemanticChecker implements ASTVisitor {
             ClassEntity classEntity = (ClassEntity) it.expr.type;
 //            else classEntity = new ClassEntity(it.expr.type, it.expr.type.typeName, null);
             if (classEntity.scope.containVar(it.identifier, false)) {
-                it.type = classEntity.scope.getVar(it.identifier, it.pos, false).type;
+                it.varEntity = classEntity.scope.getVar(it.identifier, it.pos, false);
+                it.type = it.varEntity.type;
                 if (!it.type.isArray() && globalScope.containClass(it.type.typeName))
                     it.type = globalScope.getClass(it.type.typeName, it.pos);
             } else throw new SemanticError("no such member", it.pos);
@@ -292,7 +305,6 @@ public class SemanticChecker implements ASTVisitor {
     @Override
     public void visit(NullLiteralExpr it) {
         it.type = globalScope.getClass("null", it.pos);
-        ;
     }
 
     @Override
@@ -367,12 +379,14 @@ public class SemanticChecker implements ASTVisitor {
     public void visit(BreakStmt it) {
         if (loops.isEmpty())
             throw new SemanticError("break outside loops", it.pos);
+        it.target = loops.peek();
     }
 
     @Override
     public void visit(ContinueStmt it) {
         if (loops.isEmpty())
             throw new SemanticError("continue outside loops", it.pos);
+        it.target = loops.peek();
     }
 
     @Override
@@ -449,6 +463,11 @@ public class SemanticChecker implements ASTVisitor {
         ClassEntity varType = globalScope.getClass(it.type);
         if (varType.isVoid())
             throw new SemanticError("void variable", it.pos);
+        if (currentIRClass != null) {
+            BaseIRType irType = IRRoot.getIRType(it.varEntity.type, true);
+            if (irType instanceof ClassType) irType = new PointerIRType(irType, false);
+            currentIRClass.addMember(irType);
+        }
         if (it.init != null) {
             it.init.accept(this);
 //            System.out.println(it.init.type.typeName);
@@ -460,6 +479,8 @@ public class SemanticChecker implements ASTVisitor {
             else throw new SemanticError("mismatch type", it.init.pos);
         }
         VarEntity varEntity = new VarEntity(varType, it.name, currentScope == globalScope);
+        if (currentScope instanceof ClassScope)
+            varEntity.index = new IntOperand(currentClass.addAllocSize(varEntity.type), 32);
         it.varEntity = varEntity;
         if (globalScope.containClass(it.name))
             throw new SemanticError(it.name + ": conflict with a class", it.pos);

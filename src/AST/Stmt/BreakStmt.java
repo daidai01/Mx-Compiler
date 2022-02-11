@@ -5,6 +5,8 @@ import AST.ASTVisitor;
 import Util.Position;
 
 public class BreakStmt extends BaseStmt {
+    public ASTNode target = null;
+
     public BreakStmt(Position pos) {
         super(pos);
     }

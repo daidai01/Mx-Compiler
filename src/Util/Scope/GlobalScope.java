@@ -42,18 +42,18 @@ public class GlobalScope extends BaseScope {
         FuncEntity funcEntity;
 
         //string methods
-        funcEntity = new FuncEntity(intType, "length", new FuncScope(this));
+        funcEntity = new FuncEntity(intType, "length", new FuncScope(this), true);
         stringEntity.defineFunc("length", funcEntity, new Position(0, 0));
 
-        funcEntity = new FuncEntity(stringType, "substring", new FuncScope(this));
+        funcEntity = new FuncEntity(stringType, "substring", new FuncScope(this), true);
         funcEntity.addPara(new VarEntity(intType, "left", false), new Position(0, 0));
         funcEntity.addPara(new VarEntity(intType, "right", false), new Position(0, 0));
         stringEntity.defineFunc("substring", funcEntity, new Position(0, 0));
 
-        funcEntity = new FuncEntity(intType, "parseInt", new FuncScope(this));
+        funcEntity = new FuncEntity(intType, "parseInt", new FuncScope(this), true);
         stringEntity.defineFunc("parseInt", funcEntity, new Position(0, 0));
 
-        funcEntity = new FuncEntity(intType, "ord", new FuncScope(this));
+        funcEntity = new FuncEntity(intType, "ord", new FuncScope(this), true);
         funcEntity.addPara(new VarEntity(intType, "pos", false), new Position(0, 0));
         stringEntity.defineFunc("ord", funcEntity, new Position(0, 0));
 
@@ -116,10 +116,8 @@ public class GlobalScope extends BaseScope {
     }
 
     public BaseType getBaseType(TypeNode typeNode) {
-        if (typeNode == null)
-            return null;
-        else if (typeNode.dim == 0)
-            return getClass(typeNode.name, typeNode.pos).type;
+        if (typeNode == null) return null;
+        else if (typeNode.dim == 0) return getClass(typeNode.name, typeNode.pos).type;
         else return new ArrayType(getClass(typeNode.name, typeNode.pos).name, typeNode.dim);
     }
 }
