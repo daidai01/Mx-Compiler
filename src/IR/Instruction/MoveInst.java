@@ -1,16 +1,39 @@
 package IR.Instruction;
 
-import IR.Program.Block;
+import IR.Program.IRBlock;
 import IR.Operand.BaseOperand;
 import IR.Operand.Register;
 
-public class MoveInst extends BaseInst{
-    public BaseOperand src;
-    public Register register;
+import java.util.HashSet;
 
-    public MoveInst(Block block,BaseOperand src,Register register) {
-        super(block);
-        this.src=src;
-        this.register=register;
+public class MoveInst extends BaseInst {
+    public BaseOperand src;
+
+    public MoveInst(IRBlock block, Register register, BaseOperand src, boolean addUse) {
+        super(block, register);
+        this.src = src;
+        if (addUse) src.addUse(this);
+    }
+
+    @Override
+    public String toString() {
+        return "mv " + src.type.toString() + " " + register.toString() + " " + src.toString();
+    }
+
+    @Override
+    public HashSet<BaseOperand> getUses() {
+        HashSet<BaseOperand> uses = new HashSet<>();
+        uses.add(src);
+        return uses;
+    }
+
+    @Override
+    public void remove(boolean fromBlock) {
+        if (fromBlock) block.removeInst(this);
+        src.removeUse(this);
+    }
+
+    public void replaceSrc(BaseOperand replaced, BaseOperand toReplace) {
+        if (src == replaced) src = toReplace;
     }
 }

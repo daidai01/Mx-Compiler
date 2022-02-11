@@ -1,16 +1,30 @@
 package IR.Instruction;
 
-import IR.Program.Block;
+import IR.Operand.BaseOperand;
+import IR.Program.IRBlock;
 import IR.Operand.Register;
-import IR.Type.BaseIRType;
+import IR.Type.PointerIRType;
 
-public class AllocaInst extends BaseInst{
-    public BaseIRType type;
-    public Register register;
+import java.util.HashSet;
 
-    public AllocaInst(Block block, BaseIRType type, Register register) {
-        super(block);
-        this.type=type;
-        this.register=register;
+public class AllocaInst extends BaseInst {
+    public AllocaInst(IRBlock block, Register register) {
+        super(block, register);
+        register.defInst = this;
+    }
+
+    @Override
+    public String toString() {
+        return register.toString() + " = " + "alloca " + ((PointerIRType) register.type).basicType.toString() + ", align " + ((PointerIRType) register.type).basicType.size() / 8;
+    }
+
+    @Override
+    public HashSet<BaseOperand> getUses() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public void remove(boolean fromBlock) {
+        if (fromBlock) block.removeInst(this);
     }
 }

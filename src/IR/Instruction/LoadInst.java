@@ -1,19 +1,36 @@
 package IR.Instruction;
 
-import IR.Program.Block;
+import IR.Program.IRBlock;
 import IR.Operand.BaseOperand;
 import IR.Operand.Register;
-import IR.Type.BaseIRType;
+
+import java.util.HashSet;
 
 public class LoadInst extends BaseInst {
-    public BaseOperand pointer;
-    public BaseIRType type;
-    public Register register;
+    public BaseOperand address;
 
-    public LoadInst(Block block, BaseOperand pointer, BaseIRType type, Register register) {
-        super(block);
-        this.pointer = pointer;
-        this.type = type;
-        this.register = register;
+    public LoadInst(IRBlock block, Register register, BaseOperand address) {
+        super(block, register);
+        this.address = address;
+        register.defInst = this;
+        address.addUse(this);
+    }
+
+    @Override
+    public String toString() {
+        return "%" + register.name + " = load " + register.type.toString() + ", " + address.type.toString() + " " + address.toString() + ", align " + register.type.size() / 8;
+    }
+
+    @Override
+    public HashSet<BaseOperand> getUses() {
+        HashSet<BaseOperand> uses = new HashSet<>();
+        uses.add(address);
+        return uses;
+    }
+
+    @Override
+    public void remove(boolean fromBlock) {
+        if (fromBlock) block.removeInst(this);
+        address.removeUse(this);
     }
 }

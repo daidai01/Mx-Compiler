@@ -4,25 +4,31 @@ import java.util.ArrayList;
 
 public class ClassIRType extends BaseIRType {
     public String name;
-    public ArrayList<BaseIRType> members;
+    public ArrayList<BaseIRType> members = new ArrayList<>();
+    public int size = 0;
 
-    public ClassIRType(String name, ArrayList<BaseIRType> members) {
+    public ClassIRType(String name) {
         super();
         this.name = name;
-        this.members = members;
+    }
+
+    public void addMember(BaseIRType member) {
+        members.add(member);
+        size += member.size();
     }
 
     @Override
-    public int getBytes() { //todo is this it?
-        int bytes = 0;
-        for (var member : members) {
-            bytes += member.getBytes();
-        }
-        return bytes;
+    public int size() {
+        return size;
     }
 
     @Override
     public boolean equals(BaseIRType other) {
         return other instanceof ClassIRType && name.equals(((ClassIRType) other).name);
+    }
+
+    @Override
+    public String toString() {
+        return "%struct." + name;
     }
 }

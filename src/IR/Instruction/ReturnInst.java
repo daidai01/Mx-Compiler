@@ -1,16 +1,35 @@
 package IR.Instruction;
 
-import IR.Program.Block;
+import IR.Program.IRBlock;
 import IR.Operand.BaseOperand;
-import IR.Type.BaseIRType;
 
-public class ReturnInst extends BaseInst{
-    public BaseIRType type;
-    public BaseOperand operand;
+import java.util.HashSet;
 
-    public ReturnInst(Block block,BaseIRType type,BaseOperand operand) {
-        super(block);
-        this.type=type;
-        this.operand=operand;
+public class ReturnInst extends BaseInst {
+    public BaseOperand value;
+
+    public ReturnInst(IRBlock block, BaseOperand value) {
+        super(block, null);
+        this.value = value;
+        if (value != null) value.addUse(this);
+    }
+
+    @Override
+    public String toString() {
+        if (value == null) return "ret void";
+        else return "ret " + value.type.toString() + " " + value.toString();
+    }
+
+    @Override
+    public HashSet<BaseOperand> getUses() {
+        HashSet<BaseOperand> uses = new HashSet<>();
+        if (value != null) uses.add(value);
+        return uses;
+    }
+
+    @Override
+    public void remove(boolean fromBlock) {
+        if (fromBlock) block.removeTerminalInst();
+        if (value != null) value.removeUse(this);
     }
 }

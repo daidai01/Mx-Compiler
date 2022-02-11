@@ -3,9 +3,12 @@ package IR.Operand;
 import IR.Instruction.BaseInst;
 import IR.Type.BaseIRType;
 
+import java.util.HashSet;
+
 public class Register extends BaseOperand {
     public String name;
-    public BaseInst inst;
+    public BaseInst defInst;
+    public HashSet<BaseInst> uses = new HashSet<>();
 
     public Register(BaseIRType type, String name) {
         super(type);
@@ -13,7 +16,22 @@ public class Register extends BaseOperand {
     }
 
     @Override
-    public boolean isConst() {
-        return false;
+    public String toString() {
+        return "%" + name;
+    }
+
+    @Override
+    public HashSet<BaseInst> getUses() {
+        return uses;
+    }
+
+    @Override
+    public void addUse(BaseInst inst) {
+        uses.add(inst);
+    }
+
+    @Override
+    public void removeUse(BaseInst inst) {
+        uses.remove(inst);
     }
 }
