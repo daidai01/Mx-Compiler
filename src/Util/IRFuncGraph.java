@@ -1,17 +1,20 @@
-package IR.Program;
+package Util;
 
 import IR.Instruction.BaseInst;
 import IR.Instruction.FunCallInst;
+import IR.Program.IRBlock;
+import IR.Program.IRFunction;
+import IR.Program.IRRoot;
 
 import java.util.HashMap;
 import java.util.HashSet;
 
-public class FuncGraph {
+public class IRFuncGraph {
     public IRRoot IRRoot;
     public boolean collectCallFunc;
     public HashMap<IRFunction, HashSet<IRFunction>> callFuncs = new HashMap<>();
 
-    public FuncGraph(IRRoot IRRoot) {
+    public IRFuncGraph(IRRoot IRRoot) {
         this.IRRoot = IRRoot;
         collectCallFunc = true;
     }

@@ -13,6 +13,8 @@ public class AsmRoot {
     public HashMap<GlobalReg, String> strings = new HashMap<>();
     public ArrayList<PhysicalReg> physicalRegs = new ArrayList<>();
     public HashSet<GlobalReg> globalRegs = new HashSet<>();
+    public ArrayList<PhysicalReg> callerRegs = new ArrayList<>();
+    public ArrayList<PhysicalReg> calleeRegs = new ArrayList<>();
 
     public AsmRoot() {
         physicalRegs.add(new PhysicalReg("zero"));
@@ -47,5 +49,11 @@ public class AsmRoot {
         physicalRegs.add(new PhysicalReg("t4"));
         physicalRegs.add(new PhysicalReg("t5"));
         physicalRegs.add(new PhysicalReg("t6"));
+        for (int i = 0; i < 32; ++i) {
+            if (i == 1 || (5 <= i && i <= 7) || (10 <= i && i <= 17) || (28 <= i && i <= 31))
+                callerRegs.add(physicalRegs.get(i));
+            else if (i == 8 || i == 9 || (18 <= i && i <= 27))
+                calleeRegs.add(physicalRegs.get(i));
+        }
     }
 }

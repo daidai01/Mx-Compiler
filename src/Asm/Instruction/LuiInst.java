@@ -15,8 +15,15 @@ public class LuiInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
+    public HashSet<Register> getUses() {
         return new HashSet<>();
+    }
+
+    @Override
+    public HashSet<Register> getDefs() {
+        HashSet<Register> defs = new HashSet<>();
+        defs.add(register);
+        return defs;
     }
 
     @Override

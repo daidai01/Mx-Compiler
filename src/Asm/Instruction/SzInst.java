@@ -20,10 +20,17 @@ public class SzInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
+    public HashSet<Register> getUses() {
         HashSet<Register> uses = new HashSet<>();
         uses.add(src);
         return uses;
+    }
+
+    @Override
+    public HashSet<Register> getDefs() {
+        HashSet<Register> defs = new HashSet<>();
+        defs.add(register);
+        return defs;
     }
 
     @Override

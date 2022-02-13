@@ -14,7 +14,12 @@ public class JpInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
+    public HashSet<Register> getUses() {
+        return new HashSet<>();
+    }
+
+    @Override
+    public HashSet<Register> getDefs() {
         return new HashSet<>();
     }
 

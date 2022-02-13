@@ -33,4 +33,9 @@ public class LoadInst extends BaseInst {
         if (fromBlock) block.removeInst(this);
         address.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (address == replaced) address = replacer;
+    }
 }

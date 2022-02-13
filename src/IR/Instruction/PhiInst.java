@@ -17,6 +17,22 @@ public class PhiInst extends BaseInst {
         this.values = values;
     }
 
+    public void removeBlock(IRBlock block) {
+        for (int i = 0; i < blocks.size(); ++i) {
+            if (blocks.get(i) == block) {
+                blocks.remove(i);
+                values.remove(i);
+                break;
+            }
+        }
+    }
+
+    public void add(IRBlock block, BaseOperand operand) {
+        blocks.add(block);
+        operand.addUse(this);
+        values.add(operand);
+    }
+
     @Override
     public String toString() {
         String str = register.toString() + " = phi " + register.type.toString() + " ";
@@ -34,19 +50,15 @@ public class PhiInst extends BaseInst {
         return uses;
     }
 
-    public void removeBlock(IRBlock block) {
-        for (int i = 0; i < blocks.size(); ++i) {
-            if (blocks.get(i) == block) {
-                blocks.remove(i);
-                values.remove(i);
-                break;
-            }
-        }
-    }
-
     @Override
     public void remove(boolean fromBlock) {
         if (fromBlock) block.removeInst(this);
         values.forEach(value -> value.removeUse(this));
+    }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        for (int i = 0; i < values.size(); ++i)
+            if (values.get(i) == replaced) values.set(i, replacer);
     }
 }

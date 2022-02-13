@@ -27,4 +27,7 @@ public class AllocaInst extends BaseInst {
     public void remove(boolean fromBlock) {
         if (fromBlock) block.removeInst(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {}
 }

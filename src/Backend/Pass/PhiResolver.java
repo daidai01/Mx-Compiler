@@ -111,7 +111,7 @@ public class PhiResolver implements Pass {
                     Register mirrorReg = new Register(inst.src.type, "mirror_" + inst.src);
                     block.addTerminalInst(new MoveInst(block, mirrorReg, inst.src, true));
                     copy.uses.remove(inst.src);
-                    copy.moveInsts.forEach(moveInst -> moveInst.replaceSrc(inst.src, mirrorReg));
+                    copy.moveInsts.forEach(moveInst -> moveInst.replaceUse(inst.src, mirrorReg));
                     break;
                 }
             flag = false;

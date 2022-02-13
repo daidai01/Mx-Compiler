@@ -7,15 +7,12 @@ import Asm.Program.AsmBlock;
 import java.util.HashSet;
 
 public class ImmInst extends BaseInst {
-    public enum ImmOp {
-        addi, subi, slti, xori, ori, andi, slli, srli, srai, muli, divi, remi
-    }
 
-    public ImmOp op;
+    public RegInst.AluOp op;
     public Register src;
     public Imm imm;
 
-    public ImmInst(AsmBlock block, Register register, ImmOp op, Register src, Imm imm) {
+    public ImmInst(AsmBlock block, Register register, RegInst.AluOp op, Register src, Imm imm) {
         super(block, register);
         this.op = op;
         this.src = src;
@@ -23,14 +20,21 @@ public class ImmInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
+    public HashSet<Register> getUses() {
         HashSet<Register> uses = new HashSet<>();
         uses.add(src);
         return uses;
     }
 
     @Override
+    public HashSet<Register> getDefs() {
+        HashSet<Register> defs = new HashSet<>();
+        defs.add(register);
+        return defs;
+    }
+
+    @Override
     public String toString() {
-        return op + " " + register + ", " + src + ", " + imm.value;
+        return op + "i " + register + ", " + src + ", " + imm.value;
     }
 }

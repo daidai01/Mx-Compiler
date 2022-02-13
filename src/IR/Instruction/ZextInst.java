@@ -38,4 +38,9 @@ public class ZextInst extends BaseInst {
         if (fromBlock) block.removeInst(this);
         src.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (src == replaced) src = replacer;
+    }
 }

@@ -18,10 +18,15 @@ public class CallInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
+    public HashSet<Register> getUses() {
         HashSet<Register> uses = new HashSet<>();
         uses.addAll(func.paras);
         return uses;
+    }
+
+    @Override
+    public HashSet<Register> getDefs() {
+        return new HashSet<>(asmRoot.callerRegs);
     }
 
     @Override

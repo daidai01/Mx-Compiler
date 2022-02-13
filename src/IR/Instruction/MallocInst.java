@@ -33,4 +33,9 @@ public class MallocInst extends BaseInst {
         if (fromBlock) block.removeInst(this);
         size.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (size == replaced) size = replacer;
+    }
 }

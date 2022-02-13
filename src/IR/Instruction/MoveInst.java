@@ -33,7 +33,8 @@ public class MoveInst extends BaseInst {
         src.removeUse(this);
     }
 
-    public void replaceSrc(BaseOperand replaced, BaseOperand toReplace) {
-        if (src == replaced) src = toReplace;
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (src == replaced) src = replacer;
     }
 }

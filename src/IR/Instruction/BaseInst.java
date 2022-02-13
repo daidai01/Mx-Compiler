@@ -29,4 +29,6 @@ abstract public class BaseInst {
     abstract public HashSet<BaseOperand> getUses();
 
     abstract public void remove(boolean fromBlock);
+
+    abstract public void replaceUse(BaseOperand replaced, BaseOperand replacer);
 }

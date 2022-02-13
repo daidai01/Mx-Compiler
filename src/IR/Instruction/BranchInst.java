@@ -35,4 +35,9 @@ public class BranchInst extends BaseInst {
         if (fromBlock) block.removeTerminalInst();
         condition.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (condition == replaced) condition = replacer;
+    }
 }

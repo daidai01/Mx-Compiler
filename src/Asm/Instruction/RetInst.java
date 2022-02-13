@@ -15,10 +15,17 @@ public class RetInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
-        HashSet<Register> uses=new HashSet<>();
+    public HashSet<Register> getUses() {
+        HashSet<Register> uses = new HashSet<>();
         uses.add(asmRoot.physicalRegs.get(1));
         return uses;
+    }
+
+    @Override
+    public HashSet<Register> getDefs() {
+        HashSet<Register> defs = new HashSet<>();
+        defs.add(asmRoot.physicalRegs.get(1));
+        return defs;
     }
 
     @Override

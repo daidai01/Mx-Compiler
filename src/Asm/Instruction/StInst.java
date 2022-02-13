@@ -12,8 +12,8 @@ public class StInst extends BaseInst {
     public Imm offset;
     public int size;
 
-    public StInst(AsmBlock block, Register register, Register address, Register value, Imm offset, int size) {
-        super(block, register);
+    public StInst(AsmBlock block, Register address, Register value, Imm offset, int size) {
+        super(block, null);
         this.address = address;
         this.value = value;
         this.offset = offset;
@@ -21,11 +21,16 @@ public class StInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
+    public HashSet<Register> getUses() {
         HashSet<Register> uses = new HashSet<>();
         uses.add(address);
         uses.add(value);
         return uses;
+    }
+
+    @Override
+    public HashSet<Register> getDefs() {
+        return new HashSet<>();
     }
 
     @Override

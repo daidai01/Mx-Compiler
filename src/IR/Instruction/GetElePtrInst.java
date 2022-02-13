@@ -49,4 +49,10 @@ public class GetElePtrInst extends BaseInst {
         arrayOffset.removeUse(this);
         if (eleOffset != null) eleOffset.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (pointer == replaced) pointer = replacer;
+        if (arrayOffset == replaced) arrayOffset = replacer;
+    }
 }

@@ -43,4 +43,10 @@ public class BinaryInst extends BaseInst {
         leftOp.removeUse(this);
         rightOp.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (leftOp == replaced) leftOp = replacer;
+        if (rightOp == replaced) rightOp = replacer;
+    }
 }

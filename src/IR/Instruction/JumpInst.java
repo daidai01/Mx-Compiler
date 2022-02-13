@@ -27,4 +27,7 @@ public class JumpInst extends BaseInst {
     public void remove(boolean fromBlock) {
         if (fromBlock) block.removeTerminalInst();
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {}
 }

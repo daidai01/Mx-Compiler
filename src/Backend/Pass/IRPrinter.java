@@ -1,4 +1,4 @@
-package Backend;
+package Backend.Pass;
 
 import IR.Instruction.BaseInst;
 import IR.Operand.GlobalVarOperand;
@@ -16,17 +16,19 @@ import java.util.LinkedList;
 import java.util.Map;
 import java.util.Queue;
 
-public class IRPrinter{
+public class IRPrinter implements Pass {
+    IRRoot IRRoot;
     public PrintStream ps;
     public int symbolCnt = 0;
     public int blockCnt = 0;
     public ArrayList<IRBlock> visits = new ArrayList<>();
 
-    public IRPrinter(PrintStream ps) {
+    public IRPrinter(IRRoot IRRoot, PrintStream ps) {
+        this.IRRoot = IRRoot;
         this.ps = ps;
     }
 
-    public void run(IRRoot IRRoot) {
+    public void run() {
         for (IRFunction func : IRRoot.builtinFuncs.values()) {
             symbolCnt = 0;
             ps.println(funcHead(func, true));

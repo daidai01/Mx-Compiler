@@ -22,10 +22,15 @@ public class BzInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
+    public HashSet<Register> getUses() {
         HashSet<Register> uses = new HashSet<>();
         uses.add(cond);
         return uses;
+    }
+
+    @Override
+    public HashSet<Register> getDefs() {
+        return new HashSet<>();
     }
 
     @Override

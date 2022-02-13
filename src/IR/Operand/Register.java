@@ -15,6 +15,13 @@ public class Register extends BaseOperand {
         this.name = name;
     }
 
+    public void replaceUse(BaseOperand operand) {
+        for (BaseInst inst : uses) {
+            inst.replaceUse(this, operand);
+            operand.addUse(inst);
+        }
+    }
+
     @Override
     public String toString() {
         return "%" + name;

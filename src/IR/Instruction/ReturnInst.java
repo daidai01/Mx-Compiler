@@ -32,4 +32,9 @@ public class ReturnInst extends BaseInst {
         if (fromBlock) block.removeTerminalInst();
         if (value != null) value.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (value == replaced) value = replacer;
+    }
 }

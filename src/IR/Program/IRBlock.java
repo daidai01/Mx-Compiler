@@ -7,6 +7,7 @@ import Util.Position;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.HashSet;
 
 public class IRBlock {
     public String name;
@@ -17,7 +18,11 @@ public class IRBlock {
     public int loopDepth = 0;
     public boolean terminated = false;
     public HashMap<Register, PhiInst> phis = new HashMap<>();
-    public boolean isDom = false;
+
+    public int domEntry = -1;
+    public int domExit = -1;
+    public IRBlock domBlock = null;
+    public HashSet<IRBlock> domFrontiers = new HashSet<>();
 
     public IRBlock(String name) {
         this.name = name;
@@ -124,7 +129,9 @@ public class IRBlock {
         } else throw new InternalError("terminator type error", new Position(0, 0));
     }
 
-    public boolean isDomed(IRBlock block){
-        return false; //todo
+    public boolean isDomed(IRBlock block) {
+        if (domEntry == -1 || domExit == -1 || block.domEntry == -1 || block.domExit == -1)
+            throw new InternalError("dom isn't set", new Position(0, 0));
+        return block.domEntry < domEntry && block.domExit > domExit;
     }
 }

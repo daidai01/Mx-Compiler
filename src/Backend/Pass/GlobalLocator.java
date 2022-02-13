@@ -9,12 +9,13 @@ import IR.Operand.GlobalVarOperand;
 import IR.Operand.Register;
 import IR.Program.*;
 import IR.Type.PointerIRType;
+import Util.IRFuncGraph;
 
 import java.util.*;
 
 public class GlobalLocator implements Pass {
     public IRRoot IRRoot;
-    public FuncGraph funcGraph;
+    public IRFuncGraph funcGraph;
     public HashMap<IRFunction, HashSet<GlobalVarOperand>> useMap = new HashMap<>();
     public HashMap<IRFunction, HashSet<GlobalVarOperand>> defMap = new HashMap<>();
     public HashMap<IRFunction, HashSet<IRFunction>> funCallMap = new HashMap<>();
@@ -24,7 +25,7 @@ public class GlobalLocator implements Pass {
 
     public GlobalLocator(IRRoot IRRoot) {
         this.IRRoot = IRRoot;
-        funcGraph = new FuncGraph(IRRoot);
+        funcGraph = new IRFuncGraph(IRRoot);
         funcGraph.build();
     }
 

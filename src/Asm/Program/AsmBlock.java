@@ -1,8 +1,10 @@
 package Asm.Program;
 
 import Asm.Instruction.BaseInst;
+import Asm.Operand.Register;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 
 public class AsmBlock {
     public String name;
@@ -13,6 +15,9 @@ public class AsmBlock {
     public int loopDepth = 0;
     public AsmBlock nxtBlock = null;
     public boolean hasPreBlock = false;
+
+    public HashSet<Register> liveIns = new HashSet<>();
+    public HashSet<Register> liveOuts = new HashSet<>();
 
     public AsmBlock(String name, int loopDepth) {
         this.name = name;

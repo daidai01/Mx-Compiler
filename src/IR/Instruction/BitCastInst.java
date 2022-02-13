@@ -33,4 +33,9 @@ public class BitCastInst extends BaseInst {
         if (fromBlock) block.removeInst(this);
         operand.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (operand == replaced) operand = replacer;
+    }
 }

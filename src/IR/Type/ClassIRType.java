@@ -17,6 +17,13 @@ public class ClassIRType extends BaseIRType {
         size += member.size();
     }
 
+    public int getOffset(int idx) {
+        int offset = 0;
+        for (int i = 0; i < idx; ++i)
+            offset += members.get(i).size();
+        return offset;
+    }
+
     @Override
     public int size() {
         return size;

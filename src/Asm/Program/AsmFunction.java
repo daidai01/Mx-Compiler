@@ -12,6 +12,8 @@ public class AsmFunction {
     public HashSet<AsmBlock> blocks = new LinkedHashSet<>();
     public AsmBlock entryBlock = null;
     public AsmBlock exitBlock = null;
+    public int paraOffset = 0;
+    public int counter = 0;
 
     public AsmFunction(String name) {
         this.name = name;

@@ -24,11 +24,16 @@ public class BrInst extends BaseInst {
     }
 
     @Override
-    public HashSet<Register> uses() {
+    public HashSet<Register> getUses() {
         HashSet<Register> uses = new HashSet<>();
         uses.add(src1);
         uses.add(src2);
         return uses;
+    }
+
+    @Override
+    public HashSet<Register> getDefs() {
+        return new HashSet<>();
     }
 
     @Override

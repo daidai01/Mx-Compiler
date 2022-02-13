@@ -41,4 +41,10 @@ public class StoreInst extends BaseInst {
         address.removeUse(this);
         value.removeUse(this);
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        if (address == replaced) address = replacer;
+        if (value == replaced) value = replacer;
+    }
 }

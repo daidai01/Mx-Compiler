@@ -49,4 +49,10 @@ public class FunCallInst extends BaseInst {
         if (fromBlock) block.removeInst(this);
         paras.forEach(para -> para.removeUse(this));
     }
+
+    @Override
+    public void replaceUse(BaseOperand replaced, BaseOperand replacer) {
+        for (int i = 0; i < paras.size(); ++i)
+            if (paras.get(i) == replaced) paras.set(i, replacer);
+    }
 }
