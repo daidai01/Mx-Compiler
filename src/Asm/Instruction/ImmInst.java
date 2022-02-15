@@ -34,6 +34,11 @@ public class ImmInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {
+        if (src == replaced) replaced = replacer;
+    }
+
+    @Override
     public String toString() {
         return op + "i " + register + ", " + src + ", " + imm.value;
     }

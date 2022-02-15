@@ -34,6 +34,12 @@ public class StInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {
+        if (address == replaced) address = replacer;
+        if (value == replaced) value = replacer;
+    }
+
+    @Override
     public String toString() {
         String str;
         if (size == 1) str = "sb ";

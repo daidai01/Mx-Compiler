@@ -34,6 +34,11 @@ public class SzInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {
+        if (src == replaced) src = replacer;
+    }
+
+    @Override
     public String toString() {
         return op + "z " + register + ", " + src;
     }

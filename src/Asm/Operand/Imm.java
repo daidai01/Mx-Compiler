@@ -2,6 +2,7 @@ package Asm.Operand;
 
 public class Imm extends BaseOperand {
     public int value;
+    public boolean canReverse = false;
     public boolean reverse = false;
 
     public Imm(int value) {
@@ -10,6 +11,7 @@ public class Imm extends BaseOperand {
 
     public Imm(int value, boolean reverse) {
         this.value = value;
+        this.canReverse = true;
         this.reverse = reverse;
     }
 

@@ -37,6 +37,12 @@ public class RegInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {
+        if (src1 == replaced) src1 = replacer;
+        if (src2 == replaced) src2 = replacer;
+    }
+
+    @Override
     public String toString() {
         return op + " " + register + ", " + src1 + ", " + src2;
     }

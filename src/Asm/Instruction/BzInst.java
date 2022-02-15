@@ -34,6 +34,11 @@ public class BzInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {
+        if (cond == replaced) cond = replacer;
+    }
+
+    @Override
     public String toString() {
         return op + "z " + cond + ", " + targetBlock;
     }

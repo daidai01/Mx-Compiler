@@ -33,6 +33,11 @@ public class LdInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {
+        if (address == replaced) address = replacer;
+    }
+
+    @Override
     public String toString() {
         String str;
         if (size == 1) str = "lb ";

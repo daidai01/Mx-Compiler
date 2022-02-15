@@ -14,15 +14,16 @@ import org.antlr.v4.runtime.tree.*;
 import Parser.MxLexer;
 import Parser.MxParser;
 
+import java.io.FileInputStream;
 import java.io.InputStream;
 import java.io.PrintStream;
 
 public class Main {
     public static void main(String[] args) throws Exception {
-//        String inFile = "text.mx";
+        String inFile = "testcases/codegen/e1.mx";
         try {
-//            InputStream input = new FileInputStream(inFile);
-            InputStream input = System.in;
+            InputStream input = new FileInputStream(inFile);
+//            InputStream input = System.in;
             GlobalScope globalScope = new GlobalScope();
             MxLexer lexer = new MxLexer(CharStreams.fromStream(input));
             lexer.removeErrorListeners();

@@ -29,7 +29,7 @@ public class IRBuilder implements ASTVisitor {
     public IRFunction currentFunc = null;
     public IRBlock currentBlock = null;
     public IRRoot IRRoot = null;
-    public int symbolInteger = 0;
+    public int symbolCounter = 0;
     public HashMap<ClassDef, Integer> symbols = new HashMap<>();
     public boolean isPara = false;
     public ArrayList<ReturnInst> returnInsts = new ArrayList<>();
@@ -124,13 +124,13 @@ public class IRBuilder implements ASTVisitor {
 
     @Override
     public void visit(ClassDef it) {
-        symbolInteger = 0;
+        symbolCounter = 0;
         currentClass = (ClassEntity) globalScope.getClass(it.name, it.pos);
         if (setOperand) {
             it.varDefs.forEach(var -> var.accept(this));
-            symbols.put(it, symbolInteger);
+            symbols.put(it, symbolCounter);
         } else {
-            symbolInteger = symbols.get(it);
+            symbolCounter = symbols.get(it);
             it.funcDefs.forEach(func -> func.accept(this));
             if (it.hasConstructor)
                 it.constructors.forEach(constructor -> constructor.accept(this));
@@ -142,7 +142,7 @@ public class IRBuilder implements ASTVisitor {
         FuncEntity funcEntity = it.funcEntity;
         currentFunc = funcEntity.function;
         currentBlock = currentFunc.entryBlock;
-        symbolInteger = 0;
+        symbolCounter = 0;
         returnInsts.clear();
         currentFunc.returnType = IRRoot.getIRType(funcEntity.type, false);
         if (it.isMethod) currentFunc.setClassPtr(new ParaOperand(IRRoot.getIRType(currentClass, false), "this"));
@@ -496,8 +496,8 @@ public class IRBuilder implements ASTVisitor {
         String value = getString(it.value.substring(1, it.value.length() - 1));
         StringOperand strOperand = IRRoot.usualStrings.getOrDefault(value, null);
         if (strOperand == null) {
-            String name = currentFunc.name + "." + symbolInteger;
-            symbolInteger++;
+            String name = currentFunc.name + "." + symbolCounter;
+            symbolCounter++;
             IRRoot.addConstString(name, value);
             strOperand = IRRoot.constStrings.get(name);
             it.operand = new Register(new PointerIRType(new IntIRType(8), false), "resolved_" + name);

@@ -79,7 +79,7 @@ public class InstSelector {
             entryBlock.addInst(new MvInst(entryBlock, asmFunc.paras.get(i), asmRoot.physicalRegs.get(i + 10)));
         int offset = 0;
         for (int i = 8; i < irFunc.paras.size(); ++i) {
-            entryBlock.addInst(new LdInst(entryBlock, asmRoot.physicalRegs.get(2), asmFunc.paras.get(i), new Imm(offset), irFunc.paras.get(i).type.size()));
+            entryBlock.addInst(new LdInst(entryBlock, asmFunc.paras.get(i), asmRoot.physicalRegs.get(2), new Imm(offset, false), irFunc.paras.get(i).type.size()));
             offset += 4;
         }
         for (IRBlock irBlock : irFunc.blocks) {
@@ -97,7 +97,7 @@ public class InstSelector {
         for (int i = 0; i < calleeRegs.size(); ++i)
             exitBlock.addInst(new MvInst(exitBlock, asmRoot.calleeRegs.get(i), calleeRegs.get(i)));
         exitBlock.addInst(new MvInst(exitBlock, asmRoot.physicalRegs.get(1), virtualReg));
-        exitBlock.addInst(new ImmInst(exitBlock, asmRoot.physicalRegs.get(2), RegInst.AluOp.add, asmRoot.physicalRegs.get(2), new Imm(0)));
+        exitBlock.addInst(new ImmInst(exitBlock, asmRoot.physicalRegs.get(2), RegInst.AluOp.add, asmRoot.physicalRegs.get(2), new Imm(0, false)));
         exitBlock.addInst(new RetInst(exitBlock, asmRoot));
         asmFunc.counter = counter;
     }

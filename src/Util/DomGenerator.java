@@ -7,7 +7,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.LinkedList;
 
-public class DomGenerator {
+public class DomGenerator { //dominator tree
     public IRFunction func;
     public int counter = 0;
     public ArrayList<ArrayList<IRBlock>> bucket = new ArrayList<>();

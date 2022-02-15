@@ -28,6 +28,11 @@ public class MvInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {
+        if (origin == replaced) origin = replacer;
+    }
+
+    @Override
     public String toString() {
         return "mv " + register + ", " + origin;
     }

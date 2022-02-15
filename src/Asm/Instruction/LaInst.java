@@ -26,6 +26,9 @@ public class LaInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {}
+
+    @Override
     public String toString() {
         return "la " + register + ", " + origin;
     }

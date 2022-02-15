@@ -30,6 +30,9 @@ public class CallInst extends BaseInst {
     }
 
     @Override
+    public void replaceUse(Register replaced, Register replacer) {}
+
+    @Override
     public String toString() {
         return "call " + func.name;
     }
